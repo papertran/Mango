@@ -6,17 +6,23 @@
 {% endblock %}
 
 {% block body_block %}
-    <h1>Register for Mango</h1>
-    {% if registered %}
-        <strong>Thank you for registering!</strong>
-        <a href="{% url 'mango:index' %}">Return to Homepage</a><br>
-    {% else %}
-        <strong>Register here!</strong>
-        <form action="{% url 'mango:register' %}" method="post" id="register_form" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ register_form.as_p }}
-            <input type="submit" name="submit" value="Register">
-        </form>
-    {% endif %}
+<form method="POST">
+    {% csrf_token %}
+    {% for field in registration_form %}
+        <p>
+            {{field.label_tag}}
+            {{field}}
+
+            {% if field.help_text %}
+                <small style="color: grey;">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <p style="color: red;">{{ field.help_text }}</p>
+            {% endfor %}
+
+        </p>
+    {% endfor %}
+    <button type="submit">Register</button>
+</form>
 
 {% endblock %}

@@ -24,4 +24,4 @@ def register(request):
     else:
         form = registrationForm()
         context['registration_form'] = form
-    return render(request, 'mango/register.html')
+    return render(request, 'mango/register.html', context=context)
