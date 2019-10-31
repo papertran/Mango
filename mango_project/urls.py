@@ -19,7 +19,7 @@ from mango import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name="index"),
+    path('', views.index_view, name="index"),
     path('mango/', include("mango.urls")),
 
 ]

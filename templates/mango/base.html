@@ -12,9 +12,15 @@
 
     <title>
         Mango {% block title_block %} {% endblock %}
+
     </title>
   </head>
   <body>
+    {% if request.user.is_authenticated %}
+      <p>Hello, {{ request.user.username }} </p>
+    {% else %}
+      <p>Not signed in</p>
+    {% endif %}
     {% block body_block %}
     {% endblock %}
 
@@ -23,6 +29,8 @@
 
             <li><a href="{% url 'mango:index' %}">Index</a></li>
             <li><a href="{% url 'mango:register' %}">Register</a></li>
+            <li><a href="{% url 'mango:login' %}"> Log In </a></li>
+            <li><a href="{% url 'mango:logout' %}"> Logout </a></li>
 
         </ul>
     </div>
