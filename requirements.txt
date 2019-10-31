@@ -1,0 +1,2 @@
+django == 2.2.6
+plaid-python == 3.4.0

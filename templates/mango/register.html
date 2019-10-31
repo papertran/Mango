@@ -1,0 +1,22 @@
+{% extends 'mango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Register
+{% endblock %}
+
+{% block body_block %}
+    <h1>Register for Mango</h1>
+    {% if registered %}
+        <strong>Thank you for registering!</strong>
+        <a href="{% url 'mango:index' %}">Return to Homepage</a><br>
+    {% else %}
+        <strong>Register here!</strong>
+        <form action="{% url 'mango:register' %}" method="post" id="register_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ register_form.as_p }}
+            <input type="submit" name="submit" value="Register">
+        </form>
+    {% endif %}
+
+{% endblock %}
