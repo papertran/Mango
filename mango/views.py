@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from mango.models import userAccount, Account, Transactions
-from mango.forms import registrationForm, loginForm
+from mango.forms import registrationForm, loginForm, accountUpdateForm
 from django.contrib.auth import login,logout, authenticate
 from django.views import View
 
@@ -52,3 +52,27 @@ def login_view(request):
     
     context['login_form'] = form
     return render(request, 'mango/login.html', context=context)
+
+def account_view(request):
+    if not request.user.is_authenticated:
+        return redirect("mango:login")
+
+    context = {}
+
+    if request.POST:
+        form = accountUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.initial = {
+                "email": request.POST['email'],
+                "username": request.POST['username'],
+            }
+            form.save()
+    else:
+        form = accountUpdateForm(
+            initial={
+                "email" : request.user.email,
+                "username" : request.user.username,
+            }
+        )
+    context['account_form'] = form
+    return render(request, 'mango/account.html', context=context)
