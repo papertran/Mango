@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
-from mango.models import userAccount
+from mango.models import userAccount, Account, Transactions
 
 # Register user
 class registrationForm(UserCreationForm):
@@ -51,3 +51,8 @@ class accountUpdateForm(forms.ModelForm):
             except userAccount.DoesNotExist:
                 return username
             raise forms.ValidationError("Email {} is already in use".format(account.username))
+
+class addAccountForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ("account_name", "account_type")
