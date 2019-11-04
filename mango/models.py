@@ -75,7 +75,7 @@ class Account(models.Model):
     account_type = models.CharField(max_length=128)
 
     # This connects the account to a user, A user can have many accounts
-    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID")
 
     def __str__(self):
         return self.account_name
@@ -89,8 +89,8 @@ class Transactions(models.Model):
     transaction_date = models.DateField(auto_now=False)
 
     # The keys that its related to
-    account_ID = models.ForeignKey(Account, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE)
+    account_ID = models.ForeignKey(Account, on_delete=models.CASCADE, to_field="account_ID")
+    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID")
 
     def __str__(self):
         return self.transaction_name
