@@ -75,10 +75,10 @@ class Account(models.Model):
     account_type = models.CharField(max_length=128)
 
     # This connects the account to a user, A user can have many accounts
-    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID")
+    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID",default="")
 
     def __str__(self):
-        return self.account_name
+        return str(self.account_ID)
 
 class Transactions(models.Model):
     transaction_ID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -93,4 +93,4 @@ class Transactions(models.Model):
     user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID")
 
     def __str__(self):
-        return self.transaction_name
+        return str(self.transaction_ID)

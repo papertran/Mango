@@ -95,4 +95,4 @@ def add_account_view(request):
     else:
         form = addAccountForm()
         context['add_account_form'] = form
-    return render(request, 'mango/account.html', context=context)
+    return render(request, 'mango/add_account.html', context=context)

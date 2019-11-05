@@ -1,0 +1,15 @@
+{% extends 'mango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Account
+{% endblock %}
+
+{% block body_block %}
+    <h2>Add Account</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ add_account_form.as_p }}
+        <button type="submit">Add account</button>
+    </form>
+{% endblock %}
