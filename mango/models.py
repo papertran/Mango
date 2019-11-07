@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-import uuid
 
 # Create your models here.
 
@@ -49,7 +48,7 @@ class userAccount(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
 
     # Extra Field
-    userUUID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable= False)
+    user_id = models.AutoField(primary_key=True)
     password = models.CharField(max_length=20)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -69,19 +68,19 @@ class userAccount(AbstractBaseUser):
 
 # Account Table
 class Account(models.Model):
-    account_ID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    account_ID = models.AutoField(primary_key=True)
     account_PlaidID = models.CharField(max_length=128,unique=True, null=True, editable=False)
     account_name = models.CharField(max_length=128)
     account_type = models.CharField(max_length=128)
 
     # This connects the account to a user, A user can have many accounts
-    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID",default="")
+    user = models.ForeignKey(userAccount, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.account_ID)
+        return self.account_name + " : " + self.account_type
 
 class Transactions(models.Model):
-    transaction_ID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    transaction_ID = models.AutoField(primary_key=True, editable=False)
     transaction_plaidID = models.CharField(max_length=128, unique=True, null=True, editable=False)
     transaction_name = models.CharField(max_length=128, null=False)
     transaction_amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)
@@ -89,8 +88,7 @@ class Transactions(models.Model):
     transaction_date = models.DateField(auto_now=False)
 
     # The keys that its related to
-    account_ID = models.ForeignKey(Account, on_delete=models.CASCADE, to_field="account_ID")
-    user_id = models.ForeignKey(userAccount, on_delete=models.CASCADE, to_field="userUUID")
-
+    account= models.ForeignKey(Account, on_delete=models.CASCADE)
+    
     def __str__(self):
-        return str(self.transaction_ID)
+        return self.transaction_name

@@ -87,8 +87,11 @@ def add_account_view(request):
     if request.POST:
         form = addAccountForm(request.POST)
         if form.is_valid():
+            # form.save()
+            print(request.user.user_id)
+            form.save(commit=False)
+            form.instance.user = request.user
             form.save()
-            # Save the form then redirect to account page
             return redirect("mango:account")
         else:
             context['add_account_form'] = form
