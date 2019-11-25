@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from mango.models import userAccount, Account, Transactions
-from mango.forms import registrationForm, loginForm, accountUpdateForm, addAccountForm
+from mango.forms import registrationForm, loginForm, accountUpdateForm, addAccountForm, addTransactionForm
 from django.contrib.auth import login,logout, authenticate
 from django.views import View
 
@@ -88,7 +88,6 @@ def add_account_view(request):
         form = addAccountForm(request.POST)
         if form.is_valid():
             # form.save()
-            print(request.user.user_id)
             form.save(commit=False)
             form.instance.user = request.user
             form.save()
@@ -99,3 +98,27 @@ def add_account_view(request):
         form = addAccountForm()
         context['add_account_form'] = form
     return render(request, 'mango/add_account.html', context=context)
+
+def add_transaction_view(request):
+
+    # Checks if user is signed in
+    if not request.user.is_authenticated:
+        return redirect("mango:login")
+
+    context = {}
+
+    if request.POST:
+        form = addTransactionForm(request.POST)
+        if form.is_valid():
+            # form.save()
+            form.save(commit=False)
+            form.instance.user = request.user
+            form.save()
+            return redirect("mango:account")
+        else:
+            context['add_transaction_form'] = form
+    else:
+        form = addTransactionForm()
+        context['add_transaction_form'] = form
+
+    return render(request, 'mango/add_transaction.html', context=context)
