@@ -1,0 +1,47 @@
+BEGIN;
+--
+-- Create model userAccount
+--
+CREATE TABLE "mango_useraccount" (
+    "email" varchar(128) NOT NULL UNIQUE, 
+    "username" varchar(30) NOT NULL UNIQUE, 
+    "date_joined" datetime NOT NULL, 
+    "last_login" datetime NOT NULL, 
+    "is_admin" bool NOT NULL, 
+    "is_active" bool NOT NULL, 
+    "is_staff" bool NOT NULL, 
+    "is_superuser" bool NOT NULL, 
+    "user_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "password" varchar(20) NOT NULL, 
+    "first_name" varchar(30) NOT NULL, 
+    "last_name" varchar(30) NOT NULL);
+--
+-- Create model Account
+--
+CREATE TABLE "mango_account" (
+"account_ID" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+"account_PlaidID" varchar(128) NULL UNIQUE, 
+"account_name" varchar(128) NOT NULL, 
+"account_type" varchar(128) NOT NULL, 
+"user_id" integer NOT NULL REFERENCES "mango_useraccount" ("user_id") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model Category
+--
+CREATE TABLE "mango_category" (
+    "category_ID" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "category_name" varchar(128) NOT NULL, 
+    "category_color" varchar(11) NOT NULL);
+--
+-- Create model Transactions
+--
+CREATE TABLE "mango_transactions" 
+("transaction_ID" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+"transaction_plaidID" varchar(128) NULL UNIQUE, "transaction_name" varchar(128) NOT NULL, 
+"transaction_amount" decimal NOT NULL, "transaction_location" varchar(256) NOT NULL, 
+"transaction_date" date NOT NULL, 
+"account_id" integer NOT NULL REFERENCES "mango_account" ("account_ID") DEFERRABLE INITIALLY DEFERRED, 
+"category_id" integer NOT NULL REFERENCES "mango_category" ("category_ID") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "mango_account_user_id_5d1afd65" ON "mango_account" ("user_id");
+CREATE INDEX "mango_transactions_account_id_c0c714ed" ON "mango_transactions" ("account_id");
+CREATE INDEX "mango_transactions_category_id_cfe4890e" ON "mango_transactions" ("category_id");
+COMMIT;

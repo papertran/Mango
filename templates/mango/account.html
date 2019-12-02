@@ -4,7 +4,6 @@
 
 {% block body_block %}
 
-
 <style type="text/css">
     .form-signin {
         width: 100%;
@@ -41,5 +40,22 @@
         text-align: center;
     }
 </style>
+
+<form action="{% url 'mango:add_account' %}">
+    <input type="submit" value="Add Account">
+</form>
+<form action="{% url 'mango:add_transaction' %}">
+    <input type="submit" value="Create Transaction">
+</form>
+
+<form id='plaid-link-form'></form>
+<script
+    src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
+    data-client-name="Mango"
+    data-form-id="plaid-link-form"
+    data-key="e9ff349fb8fd8b6bc5ef02d33d93e4"
+    data-product="auth"
+    data-env="sandbox">
+</script>
 
 {% endblock %}

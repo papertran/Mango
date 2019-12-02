@@ -60,8 +60,13 @@ class addAccountForm(forms.ModelForm):
 class addTransactionForm(forms.ModelForm):
     class Meta:
         model = Transactions
-        fields = ("transaction_name", "transaction_amount", "transaction_location", "transaction_date", "account")
+        fields = ("transaction_name", "transaction_amount", "transaction_location", "transaction_date", "account", "category")
         widgets = {
             'transaction_date' : forms.DateInput(attrs={'type':'date'})
         }
 
+class queryForm(forms.Form):
+    startDate = forms.DateField(label="Start Date", widget=forms.DateInput(attrs={'type':'date'}), required=True)
+    endDate = forms.DateField(label="Start Date", widget=forms.DateInput(attrs={'type':'date'}), required=True)
+    Min = forms.DecimalField(decimal_places=2, required=True)
+    Max = forms.DecimalField(decimal_places=2, required=True)

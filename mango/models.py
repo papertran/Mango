@@ -77,18 +77,28 @@ class Account(models.Model):
     user = models.ForeignKey(userAccount, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.account_name + " : " + self.account_type
+        return self.account_name + " - " + self.account_type
+
+
+class Category(models.Model):
+    category_ID = models.AutoField(primary_key=True, editable=False)
+    category_name = models.CharField(max_length=128, null=False)
+    category_color = models.CharField(max_length=11, null=False)
+
+    def __str__(self):
+        return self.category_name
 
 class Transactions(models.Model):
     transaction_ID = models.AutoField(primary_key=True, editable=False)
     transaction_plaidID = models.CharField(max_length=128, unique=True, null=True, editable=False)
     transaction_name = models.CharField(max_length=128, null=False)
     transaction_amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-    transaction_location = models.CharField(max_length=256, editable=True)
+    transaction_location = models.CharField(max_length=256, editable=True, null=True)
     transaction_date = models.DateField(auto_now=False)
 
     # The keys that its related to
     account= models.ForeignKey(Account, on_delete=models.CASCADE)
-    
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.transaction_name

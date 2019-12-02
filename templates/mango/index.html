@@ -5,16 +5,68 @@
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4">Mango Money</h1>
-        <p class="lead">
-            Nothing yet, will add data here
-        </p>
+        {% if user.is_authenticated %}
+            <p class="lead">    
+                Here is a summary of your accounts           
+            </p>
+        {% else %}
+            <p class="lead">    
+                Please sign in to view summary of accounts
+            </p>
+        {% endif %}
 </div>
 
 <div class="container">
     <!-- Flex Box -->
     <div class="d-flex flex-column">
-        <h4>This is going to be the sample content</h4>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad eius, doloribus quis beatae sit exercitationem, at consequuntur cum perferendis asperiores cupiditate, sunt illum fugit ullam. Nam ipsum repellat vero praesentium.</p>
+
+        {% if user.is_authenticated %}
+
+
+
+            <form method="POST">
+                    {% csrf_token %}
+                    {{ query_form }}
+                <button type="submit">Make Query</button>
+            </form>
+
+
+            <div>
+                <p>The number of transactions is {{ number_transaction }} </p>
+                <p>The average amount per transaction is {{ average_transaction }}</p>
+                <p>The total is {{ sum_transaction }}</p>
+
+            </div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>date</th>
+                </tr>
+                {% for item in allTransactions %}
+                <tr>
+                    <td>{{ item.transaction_name }}</td>
+                    <td>{{ item.account_name }}</td>
+                    <td>{{ item.transaction_amount }}</td>
+                    <td>{{ item.transaction_location }}</td>
+                    <td>{{ item.category_name }}</td>
+                    <td>{{ item.transaction_date }}</td>
+
+                </tr>
+                {% endfor %}
+            </table>
+
+
+        {% else %}
+            <p>    
+                Not Signed in
+            </p>
+        {% endif %}
+
+
     </div>
 </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mango.models import userAccount, Account, Transactions
+from mango.models import userAccount, Account, Transactions, Category
 # Register your models here.
 
 # This diplays the fields on the admin page
@@ -12,6 +12,9 @@ class accountFields(admin.ModelAdmin):
 class transactionFields(admin.ModelAdmin):
     list_display = ('transaction_ID', 'transaction_plaidID', 'transaction_name', 'transaction_amount', 'transaction_date', 'transaction_location', 'account')
 
+class categoryFields(admin.ModelAdmin):
+    list_display = ('category_ID', 'category_name', 'category_color')
 admin.site.register(userAccount, adminFields)
 admin.site.register(Account, accountFields)
 admin.site.register(Transactions, transactionFields)
+admin.site.register(Category, categoryFields)

@@ -1,12 +1,166 @@
 from django.shortcuts import render, redirect
-from mango.models import userAccount, Account, Transactions
-from mango.forms import registrationForm, loginForm, accountUpdateForm, addAccountForm, addTransactionForm
+from django.db import connection
+from mango.models import userAccount, Account, Transactions, Category
+from mango.forms import registrationForm, loginForm, accountUpdateForm, addAccountForm, addTransactionForm, queryForm
 from django.contrib.auth import login,logout, authenticate
 from django.views import View
+import datetime
 
 # Create your views here.
 def index_view(request):
-    return render(request, 'mango/index.html')
+    context = {}
+
+    user = request.user
+
+
+    if(request.POST):
+        # DO Post Request
+        form = queryForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data["startDate"]
+            end = form.cleaned_data["endDate"]
+            minAmount = form.cleaned_data["Min"]
+            maxAmount = form.cleaned_data["Max"]
+
+            # Transaction Query with parameters
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT transaction_name, account_name, transaction_amount, transaction_location, transaction_date, category_name 
+                    FROM mango_transactions 
+                    LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                    INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                    WHERE user_id = %s AND 
+                    (transaction_date >= %s AND transaction_date <= %s) AND 
+                    (transaction_amount >= %s AND transaction_amount <= %s)
+                """, [user.user_id, start, end, minAmount, maxAmount])
+                allTransactionsQuery = cursor.fetchall()
+                allTransactions = []
+                for item in allTransactionsQuery:
+                    transactionsDict = {
+                        'transaction_name' : item[0],
+                        'account_name' : item[1],
+                        'transaction_amount' : item[2],
+                        'transaction_location' : item[3],
+                        'transaction_date' : item[4],
+                        'category_name' : item[5]
+                    }
+                    allTransactions.append(transactionsDict)
+                context['allTransactions'] = allTransactions
+
+
+
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT COUNT(transaction_amount) 
+                    FROM mango_transactions 
+                    LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                    INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                    WHERE user_id = %s AND 
+                    (transaction_date >= %s AND transaction_date <= %s) AND 
+                    (transaction_amount >= %s AND transaction_amount <= %s)
+                """, [user.user_id, start, end, minAmount, maxAmount])
+                TransactionsQuery = cursor.fetchone()[0]
+                context["number_transaction"] = TransactionsQuery
+
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT AVG(transaction_amount) 
+                    FROM mango_transactions 
+                    LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                    INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                    WHERE user_id = %s AND 
+                    (transaction_date >= %s AND transaction_date <= %s) AND 
+                    (transaction_amount >= %s AND transaction_amount <= %s)
+                """, [user.user_id, start, end, minAmount, maxAmount])
+                TransactionsQuery = round(cursor.fetchone()[0], 2)
+                context["average_transaction"] = TransactionsQuery
+
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT SUM(transaction_amount) 
+                    FROM mango_transactions 
+                    LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                    INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                    WHERE user_id = %s AND 
+                    (transaction_date >= %s AND transaction_date <= %s) AND 
+                    (transaction_amount >= %s AND transaction_amount <= %s)
+                """, [user.user_id, start, end, minAmount, maxAmount])
+                TransactionsQuery = cursor.fetchone()[0]
+                context["sum_transaction"] = TransactionsQuery
+
+
+                newForm = queryForm(    initial={'startDate': start, 'endDate': end, "Min" : minAmount, "Max" : maxAmount }) 
+                
+                context['query_form'] = newForm
+
+        else:
+            context['query_form'] = form
+    else:
+        # Regular transaction
+        form = queryForm()
+        context['query_form'] = form
+        # Transaction Query
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT transaction_name, account_name, transaction_amount, transaction_location, transaction_date, category_name 
+                FROM mango_transactions 
+                LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                WHERE user_id = %s
+            """, [user.user_id])
+            allTransactionsQuery = cursor.fetchall()
+            allTransactions = []
+            for item in allTransactionsQuery:
+                transactionsDict = {
+                    'transaction_name' : item[0],
+                    'account_name' : item[1],
+                    'transaction_amount' : item[2],
+                    'transaction_location' : item[3],
+                    'transaction_date' : item[4],
+                    'category_name' : item[5]
+                }
+                allTransactions.append(transactionsDict)
+            context['allTransactions'] = allTransactions
+        
+
+
+        # Get number of transactins
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT COUNT(transaction_name)
+                FROM mango_transactions 
+                LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                WHERE user_id = %s
+            """, [user.user_id])
+            TransactionsQuery = cursor.fetchone()[0]
+            context["number_transaction"] = TransactionsQuery
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT AVG(transaction_amount)
+                FROM mango_transactions 
+                LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                WHERE user_id = %s
+            """, [user.user_id])
+            TransactionsQuery = round( cursor.fetchone()[0], 2)
+            context["average_transaction"] = TransactionsQuery    
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT SUM(transaction_amount)
+                FROM mango_transactions 
+                LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
+                INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
+                WHERE user_id = %s
+            """, [user.user_id])
+            TransactionsQuery = cursor.fetchone()[0]
+            context["sum_transaction"] = TransactionsQuery       
+
+
+
+    return render(request, 'mango/index.html', context=context)
 
 def register_view(request):
     context = {}
