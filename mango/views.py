@@ -144,6 +144,8 @@ def index_view(request):
         # Regular transaction
         form = queryForm()
         context['query_form'] = form
+
+
         # Transaction Query
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -154,6 +156,11 @@ def index_view(request):
                 WHERE user_id = %s
             """, [user.user_id])
             allTransactionsQuery = cursor.fetchall()
+            if not allTransactionsQuery:
+                context["no_transactions"] = True
+                return render(request, 'mango/index.html', context=context)
+            else:
+                context["no_transactions"] = False
             allTransactions = []
             for item in allTransactionsQuery:
                 transactionsDict = {

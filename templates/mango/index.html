@@ -20,16 +20,17 @@
     <!-- Flex Box -->
     <div class="d-flex flex-column">
 
-        {% if user.is_authenticated %}
 
-
-
+        {% if no_transactions %}
+            <p>
+                There are no transactions to display, please add them from the account page!
+            </p>
+        {% else %}
             <form method="POST">
                     {% csrf_token %}
                     {{ query_form }}
                 <button type="submit">Make Query</button>
             </form>
-
 
             <div>
                 <p>The number of transactions is {{ number_transaction }} </p>
@@ -59,6 +60,9 @@
                 {% endfor %}
             </table>
 
+
+<br>
+<br>
 
 <!-- ***************************************************************************************** -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
@@ -146,6 +150,8 @@
     });
     */
 
+
+    
     // Array of markers
     var markers = [
       {
@@ -198,13 +204,9 @@
 
 <!-- ***************************************************************************************** -->
 
-        {% else %}
-            <p>    
-                Not Signed in
-            </p>
-        {% endif %}
-
 
     </div>
 </div>
+{% endif %}
+
 {% endblock %}
