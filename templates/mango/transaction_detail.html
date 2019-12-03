@@ -1,0 +1,15 @@
+{% extends 'mango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Transaction
+{% endblock %}
+
+{% block body_block %}
+    <h2>Transaction Detail</h2>
+    <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" />
+    </form>
+{% endblock %}

@@ -4,14 +4,59 @@ from mango.models import userAccount, Account, Transactions, Category
 from mango.forms import registrationForm, loginForm, accountUpdateForm, addAccountForm, addTransactionForm, queryForm
 from django.contrib.auth import login,logout, authenticate
 from django.views import View
+from django.views.generic import UpdateView, ListView, DeleteView
+from django.urls import reverse_lazy
+
 import datetime
 
 # Create your views here.
+
+# Update View
+
+
+class transactionUpdate(UpdateView):
+    template_name = "mango/transaction_update_form.html"
+    queryset = Transactions.objects.all()
+    success_url = '/'
+    form_class = addTransactionForm
+
+    def get_queryset(self):
+        user = self.request.user.user_id
+        return self.queryset.filter(
+            account__user = user
+        )
+
+class transactionDelete(DeleteView):
+    template_name = "mango/transaction_delete_form.html"
+    queryset = Transactions.objects.all()
+    success_url = '/'
+    
+    def get_queryset(self):
+        user = self.request.user.user_id
+        return self.queryset.filter(
+            account__user = user
+        )
+class transactionsList(ListView):
+    template_name = "mango/transaction_list.html"
+    model = Transactions
+    queryset = Transactions.objects.all().order_by('-transaction_date')
+    success_url = '/'
+    def get_queryset(self):
+        user = self.request.user.user_id
+        return self.queryset.filter(
+            account__user = user
+        )
+
+
+
+
 def index_view(request):
     context = {}
 
     user = request.user
 
+    if not request.user.is_authenticated:
+        return redirect("mango:login")        
 
     if(request.POST):
         # DO Post Request
@@ -256,7 +301,9 @@ def add_account_view(request):
 def add_transaction_view(request):
 
     # Checks if user is signed in
-    if not request.user.is_authenticated:
+    user = request.user
+    
+    if not user.is_authenticated:
         return redirect("mango:login")
 
     context = {}
@@ -273,6 +320,7 @@ def add_transaction_view(request):
             context['add_transaction_form'] = form
     else:
         form = addTransactionForm()
+        form.fields["account"].queryset = Account.objects.filter(user = user)
         context['add_transaction_form'] = form
 
     return render(request, 'mango/add_transaction.html', context=context)

@@ -1,0 +1,42 @@
+{% extends 'mango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Transaction 
+{% endblock %}
+
+{% block body_block %}
+<div class="container">
+        <!-- Flex Box -->
+    <div class="d-flex flex-column">
+        <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>date</th>
+                    <th>Update Transaction</th>
+                    <th>Delete Transaction</th>
+                
+                </tr>
+        {% for item in object_list %}
+            <tr>
+                <td> {{ item.transaction_name }}</td>
+                <td>{{ item.account  }}</td>
+                <td>{{ item.transaction_amount }}</td>
+                <td>{{ item.transaction_location }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.transaction_date }}</td>
+                <td> <a href=" {% url 'mango:update_transaction' item.transaction_ID %} ">Update Transaction</a> </td>
+                <td> <a href=" {% url 'mango:delete_transaction' item.transaction_ID %}">Delete Transaction</a> </td>
+
+            </tr>
+        {% endfor %}
+
+        </table>
+    </div>
+</div>
+
+{% endblock %}

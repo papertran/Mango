@@ -2,20 +2,18 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Add Transaction
+    Delete Transaction 
 {% endblock %}
 
 {% block body_block %}
-
 <div class="container">
         <!-- Flex Box -->
     <div class="d-flex flex-column">
-    <h2>Add Transaction</h2>
-        <form method="POST">
+        <form action="post">
             {% csrf_token %}
-            {{ add_transaction_form.as_p }}
-            <button type="submit">Add Transaction</button>
+            <p>Are you sure you want to delete " {{ object }} ?</p>
+            <input type="submit" value="Confirm">
         </form>
-    </div>  
-</div>  
+    </div>
+</div>
 {% endblock %}

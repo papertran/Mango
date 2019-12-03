@@ -65,6 +65,7 @@ class addTransactionForm(forms.ModelForm):
             'transaction_date' : forms.DateInput(attrs={'type':'date'})
         }
 
+
 class queryForm(forms.Form):
     startDate = forms.DateField(label="Start Date", widget=forms.DateInput(attrs={'type':'date'}), required=True)
     endDate = forms.DateField(label="Start Date", widget=forms.DateInput(attrs={'type':'date'}), required=True)

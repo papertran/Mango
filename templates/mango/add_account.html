@@ -6,10 +6,16 @@
 {% endblock %}
 
 {% block body_block %}
-    <h2>Add Account</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ add_account_form.as_p }}
-        <button type="submit">Add account</button>
-    </form>
+<div class="container">
+        <!-- Flex Box -->
+    <div class="d-flex flex-column">
+
+        <h2>Add Account</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ add_account_form.as_p }}
+            <button type="submit">Add account</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

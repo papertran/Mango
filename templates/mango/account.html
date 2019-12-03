@@ -4,58 +4,75 @@
 
 {% block body_block %}
 
-<style type="text/css">
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
-        margin: auto;
-    }
+
+<div class="container">
+        <!-- Flex Box -->
+    <div class="d-flex flex-column">
+        <style type="text/css">
+            .form-signin {
+                width: 100%;
+                max-width: 330px;
+                padding: 15px;
+                margin: auto;
+            }
 
 
-    .form-signin .form-control {
-        position: relative;
-        box-sizing: border-box;
-        height: auto;
-        padding: 10px;
-        font-size: 16px;
-    }
+            .form-signin .form-control {
+                position: relative;
+                box-sizing: border-box;
+                height: auto;
+                padding: 10px;
+                font-size: 16px;
+            }
 
-    .form-signin .form-control:focus {
-        z-index: 2;
-    }
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
 
-    .form-signin input[type="email"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
+            .form-signin input[type="email"] {
+                margin-bottom: -1px;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
 
-    .form-signin input[type="username"] {
-        margin-bottom: 10px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-    .h3{
-        text-align: center;
-    }
-</style>
+            .form-signin input[type="username"] {
+                margin-bottom: 10px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+            .h3{
+                text-align: center;
+            }
+        </style>
 
-<form action="{% url 'mango:add_account' %}">
-    <input type="submit" value="Add Account">
-</form>
-<form action="{% url 'mango:add_transaction' %}">
-    <input type="submit" value="Create Transaction">
-</form>
+        <form action="{% url 'mango:add_account' %}">
+            <input type="submit" value="Add Account">
+        </form>
 
-<form id='plaid-link-form'></form>
-<script
-    src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
-    data-client-name="Mango"
-    data-form-id="plaid-link-form"
-    data-key="e9ff349fb8fd8b6bc5ef02d33d93e4"
-    data-product="auth"
-    data-env="sandbox">
-</script>
+        <br>        
+
+        <form action="{% url 'mango:add_transaction' %}">
+            <input type="submit" value="Create Transaction">
+        </form>
+
+        <br>
+
+        <form action="{% url 'mango:transaction_list' %}">
+                <input type="submit" value="Modify Transactions">
+        </form>
+
+
+        <br>
+        <form id='plaid-link-form'></form>
+        <script
+            src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
+            data-client-name="Mango"
+            data-form-id="plaid-link-form"
+            data-key="e9ff349fb8fd8b6bc5ef02d33d93e4"
+            data-product="auth"
+            data-env="sandbox">
+        </script>
+    </div>  
+</div>
 
 {% endblock %}

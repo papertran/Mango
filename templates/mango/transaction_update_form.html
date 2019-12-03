@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Add Transaction
+    Update Transaction 
 {% endblock %}
 
 {% block body_block %}
@@ -10,12 +10,12 @@
 <div class="container">
         <!-- Flex Box -->
     <div class="d-flex flex-column">
-    <h2>Add Transaction</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ add_transaction_form.as_p }}
-            <button type="submit">Add Transaction</button>
+        <h2>Update Transaction</h2>
+        <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" />
         </form>
-    </div>  
-</div>  
+    </div>
+</div> 
 {% endblock %}
