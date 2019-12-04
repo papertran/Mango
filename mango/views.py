@@ -76,9 +76,13 @@ def index_view(request):
                     INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
                     WHERE user_id = %s AND 
                     (transaction_date >= %s AND transaction_date <= %s) AND 
-                    (transaction_amount >= %s AND transaction_amount <= %s)
+                    (transaction_amount >= %s AND transaction_amount <= %s) ORDER BY transaction_date DESC
                 """, [user.user_id, start, end, minAmount, maxAmount])
                 allTransactionsQuery = cursor.fetchall()
+
+                if not allTransactionsQuery:
+                    context["no_transactions"] = True
+                    return render(request, 'mango/index.html', context=context)
                 allTransactions = []
                 for item in allTransactionsQuery:
                     transactionsDict = {
@@ -102,7 +106,7 @@ def index_view(request):
                     INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
                     WHERE user_id = %s AND 
                     (transaction_date >= %s AND transaction_date <= %s) AND 
-                    (transaction_amount >= %s AND transaction_amount <= %s)
+                    (transaction_amount >= %s AND transaction_amount <= %s)  ORDER BY transaction_date DESC
                 """, [user.user_id, start, end, minAmount, maxAmount])
                 TransactionsQuery = cursor.fetchone()[0]
                 context["number_transaction"] = TransactionsQuery
@@ -115,7 +119,7 @@ def index_view(request):
                     INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
                     WHERE user_id = %s AND 
                     (transaction_date >= %s AND transaction_date <= %s) AND 
-                    (transaction_amount >= %s AND transaction_amount <= %s)
+                    (transaction_amount >= %s AND transaction_amount <= %s)  ORDER BY transaction_date DESC
                 """, [user.user_id, start, end, minAmount, maxAmount])
                 TransactionsQuery = round(cursor.fetchone()[0], 2)
                 context["average_transaction"] = TransactionsQuery
@@ -128,9 +132,9 @@ def index_view(request):
                     INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
                     WHERE user_id = %s AND 
                     (transaction_date >= %s AND transaction_date <= %s) AND 
-                    (transaction_amount >= %s AND transaction_amount <= %s)
+                    (transaction_amount >= %s AND transaction_amount <= %s)  ORDER BY transaction_date DESC
                 """, [user.user_id, start, end, minAmount, maxAmount])
-                TransactionsQuery = cursor.fetchone()[0]
+                TransactionsQuery = round(cursor.fetchone()[0], 2)
                 context["sum_transaction"] = TransactionsQuery
 
 
@@ -153,7 +157,7 @@ def index_view(request):
                 FROM mango_transactions 
                 LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
                 INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
-                WHERE user_id = %s
+                WHERE user_id = %s  ORDER BY transaction_date DESC
             """, [user.user_id])
             allTransactionsQuery = cursor.fetchall()
             if not allTransactionsQuery:
@@ -183,7 +187,7 @@ def index_view(request):
                 FROM mango_transactions 
                 LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
                 INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
-                WHERE user_id = %s
+                WHERE user_id = %s  ORDER BY transaction_date DESC
             """, [user.user_id])
             TransactionsQuery = cursor.fetchone()[0]
             context["number_transaction"] = TransactionsQuery
@@ -194,7 +198,7 @@ def index_view(request):
                 FROM mango_transactions 
                 LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
                 INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
-                WHERE user_id = %s
+                WHERE user_id = %s  ORDER BY transaction_date DESC
             """, [user.user_id])
             TransactionsQuery = round( cursor.fetchone()[0], 2)
             context["average_transaction"] = TransactionsQuery    
@@ -205,9 +209,9 @@ def index_view(request):
                 FROM mango_transactions 
                 LEFT JOIN mango_category ON mango_transactions.category_ID = mango_category.category_ID
                 INNER JOIN mango_account ON mango_transactions.account_id = mango_account.account_ID
-                WHERE user_id = %s
+                WHERE user_id = %s  ORDER BY transaction_date DESC 
             """, [user.user_id])
-            TransactionsQuery = cursor.fetchone()[0]
+            TransactionsQuery = round( cursor.fetchone()[0], 2)
             context["sum_transaction"] = TransactionsQuery       
 
 
@@ -331,3 +335,9 @@ def add_transaction_view(request):
         context['add_transaction_form'] = form
 
     return render(request, 'mango/add_transaction.html', context=context)
+
+def map_view(request):
+    context = {}
+    form = registrationForm()
+    context['map_form'] = form
+    return render(request, 'mango/map.html', context=context)
