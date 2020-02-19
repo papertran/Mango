@@ -1,14 +1,11 @@
 # Mango
-COP4710 Databases Project <br>
-To use install the requirements with <br>
-pip install -r requirements.txt<br>
+COP4710 Theory of databases project. Django-based web application that allows users to register and input transactions into a sqlite database. Queries can be made within the web application to narrow down transactions, and transactions with valid addresses will have a pin placed on google maps.
 
-If that doesnt work:<br>
+## Requirements
 pip install django==2.2.6 <br>
-pip install plaid-python == 3.4.0 <br>
 
-Then run<br>
-python manage.py runserver<br>
-
-Then in your browser go to <br>
-http://127.0.0.1:8000/mango/
+## To Run
+<ol>
+  <li>python manage.py runserver</li>
+  <li>Then in your browser go to http://127.0.0.1:8000/mango/</li>
+</ol>
